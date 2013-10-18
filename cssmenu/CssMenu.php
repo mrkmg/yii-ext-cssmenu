@@ -176,22 +176,7 @@ class CssMenuItem
 	public function makeItem()
 	{
 		echo '<a href="';
-		if($this->url == false)
-		{
-			echo 'javascript:void(0)';
-		}
-		else
-		{
-			if(is_array($this->url))
-			{
-				$first = array_shift($this->url);
-				echo Yii::app()->createUrl($first,$this->url);
-			}
-			else
-			{
-				echo Yii::app()->createUrl($this->url);
-			}
-		}
+		echo $this->makeLinkUrl();
 		echo '"';
 		echo $this->parseExtra();
 		echo '>';
@@ -287,6 +272,28 @@ class CssMenuItem
 			}
 		}
 		else return false;
+	}
+
+	private function makeLinkUrl(){
+		if($this->url == false)
+		{
+			return 'javascript:void(0)';
+		}
+		else
+		{
+			if(is_array($this->url))
+			{
+				$first = array_shift($this->url);
+				return Yii::app()->createUrl($first,$this->url);
+			}
+			elseif(preg_match('/(https?|ftp|mailto|tel):\/\//i', $this->url)){
+				return $this->url;
+			}
+			else
+			{
+				return Yii::app()->createUrl($this->url);
+			}
+		}
 	}
 }
 
